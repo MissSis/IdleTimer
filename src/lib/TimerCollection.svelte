@@ -49,14 +49,14 @@
 </script>
 
 <button on:click={() => (addDialogOpen = true)} class="absolute left-1 top-1">+</button>
-<Dialog bind:open={addDialogOpen} title="Create new timer" close={closeDialog}>
+<Dialog bind:open={addDialogOpen} title="Create new timer" close={closeDialog} submit={newTimerSubmitButton}>
   <input bind:value={newTimerTitle} bind:this={dialogInput} use:focus />
   <DialogButtons>
     <button class="bg-red-700" on:click={closeDialog}>Cancel</button>
     <button class="bg-green-700" on:click={newTimerSubmitButton}>Submit</button>
   </DialogButtons>
 </Dialog>
-<Dialog bind:open={removeDialogOpen} title="Do you want to remove the timer?" close={abortRemoveTimer}>
+<Dialog bind:open={removeDialogOpen} title="Do you want to remove the timer?" close={abortRemoveTimer} submit={removeTimer}>
   <DialogButtons>
     <button class="bg-red-700" on:click={abortRemoveTimer}>No</button>
     <button class="bg-green-700" on:click={removeTimer}>Yes</button>

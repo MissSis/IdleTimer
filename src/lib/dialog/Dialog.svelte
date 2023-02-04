@@ -2,10 +2,13 @@
   export let open: boolean;
   export let title: string;
   export let close: () => void;
+  export let submit: () => void | null = null;
 
   function keyPress(key: KeyboardEvent) {
     if (open && key.key === 'Escape') {
-      open = false;
+      close();
+    } else if (open && key.key === 'Enter' && submit) {
+      submit();
     }
   }
 </script>
