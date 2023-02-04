@@ -1,13 +1,29 @@
 import { readTextFile, writeTextFile, BaseDirectory } from '@tauri-apps/api/fs'
-import type { TimerProps, TimerUpdateEvent } from '../Timer';
+import type { TimerProps } from '../Timer';
 import validateJson from './validateTimerFile';
+import timerStore from './TimerStore';
+import type { Unsubscriber } from 'svelte/store';
 
 const fileName = 'timers.json';
 
+// The amount of seconds before a new change will be written to a file.
+// With this delay multiple changes can be bundled into one write operation.
+const writeDelay = 1000;
+
 export default class PersistencyManager {
-  timers: TimerProps[] = [];
+  unsubscribe: Unsubscriber;
+  currentTimeout: NodeJS.Timeout | null = null;
 
   async init(): Promise<void> {
+    this.unsubscribe = timerStore.subscribe(timers => {
+      if (this.currentTimeout != null) {
+        clearTimeout(this.currentTimeout);
+      }
+      this.currentTimeout = setTimeout(() => {
+        this.write(timers);
+      }, writeDelay);
+    });
+
     try {
       const timers: TimerProps[] = JSON.parse(await readTextFile(fileName, {
         dir: BaseDirectory.AppData,
@@ -18,54 +34,23 @@ export default class PersistencyManager {
       } else if (!uniqueIds) {
         throw new Error('Some ids in the file are not unique!');
       }
-      this.timers = timers;
+      timerStore.set(timers);
 
     } catch (e) {
       if (typeof e !== 'string' || !e.includes('The system cannot find the file specified')) {
         throw e;
       }
-      this.write();
+      this.write([]);
     }
   }
 
-  private write() {
-    writeTextFile(fileName, JSON.stringify(this.timers), {
+  private write(timers: TimerProps[]) {
+    writeTextFile(fileName, JSON.stringify(timers), {
       dir: BaseDirectory.AppData,
     });
   }
 
-  updateTimer(event: TimerUpdateEvent): boolean {
-    const timer = this.timers.find(t => t.id === event.id);
-    if (!timer) {
-      return false;
-    }
-
-    Object.keys(event).forEach(key => {
-      if (key == 'id' || event[key] === undefined) return;
-      timer[key] = event[key];
-    });
-
-    this.write();
-    return true;
-  }
-
-  createTimer(timer: TimerProps): boolean {
-    if (this.timers.find(t => t.id === timer.id)) {
-      return false;
-    }
-
-    this.timers.push(structuredClone(timer));
-    this.write();
-    return true;
-  }
-
-  deleteTimer(id: string): boolean {
-    const timerIndex = this.timers.findIndex(t => t.id === id);
-    if (timerIndex === -1) {
-      return false;
-    }
-    this.timers.splice(timerIndex, 1);
-    this.write();
-    return true;
+  close() {
+    this.unsubscribe();
   }
 }

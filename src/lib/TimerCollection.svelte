@@ -5,11 +5,7 @@
   import type { RemoveTimerEvent, TimerProps } from "./Timer";
   import Timer from "./Timer.svelte";
   import { focus } from "./utils/utils";
-
-  const dispatchRemove = createEventDispatcher<{removeTimer: {id: string}}>();
-  const dispatchCreate = createEventDispatcher<{createTimer: {timer: TimerProps}}>();
-
-  let timers: TimerProps[] = [];
+  import timerStore from './persistency/TimerStore';
 
   let newTimerTitle = '';
   let addDialogOpen = false;
@@ -31,10 +27,9 @@
     if (removeTimerId == null) {
       return;
     }
-    timers.splice(timers.findIndex(timer => timer.id === removeTimerId), 1);
-    timers = timers;
+    $timerStore.splice($timerStore.findIndex(timer => timer.id === removeTimerId), 1);
+    $timerStore = $timerStore;
     removeDialogOpen = false;
-    dispatchRemove('removeTimer', {id: removeTimerId});
   }
 
   function abortRemoveTimer() {
@@ -43,8 +38,7 @@
   }
 
   function createNewTimer(title: string) {
-    timers = [...timers, {id: crypto.randomUUID(), title}];
-    dispatchCreate('createTimer', {timer: timers[timers.length - 1]});
+    $timerStore = [...$timerStore, {id: crypto.randomUUID(), title}];
   }
 
   function newTimerSubmitButton() {
@@ -69,7 +63,9 @@
   </DialogButtons>
 </Dialog>
 <div class="inline-flex flex-col gap-3 overflow-y-auto pt-5 pb-5">
-  {#each timers as timer}
-    <Timer {...timer} on:removeTimer={removeEventHandler} on:updateTimer />
+  {#each $timerStore as timer}
+    <Timer id={timer.id}
+      bind:time={timer.time} bind:title={timer.title} bind:accumulated={timer.accumulated}
+      on:removeTimer={removeEventHandler} />
   {/each}
 </div>

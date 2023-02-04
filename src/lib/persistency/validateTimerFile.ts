@@ -7,20 +7,20 @@ const schema = {
   items: {
     type: 'object',
     properties: {
-      accumulatedTime: {
+      accumulated: {
         type: 'integer',
       },
       time: {
         type: 'integer',
       },
-      name: {
+      title: {
         type: 'string',
       },
       id: {
         type: 'string',
       },
     },
-    required: ['accumulatedTime', 'time', 'name', 'id'],
+    required: ['accumulated', 'time', 'title', 'id'],
   },
 };
 

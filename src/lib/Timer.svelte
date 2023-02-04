@@ -8,8 +8,8 @@
   export let title: string;
   export let accumulated = 0;
   export let id: string;
+  export let time = 0;
 
-  let time = 0;
   let lastTime = 0;
   let running = false;
   let paused = true;
@@ -21,21 +21,6 @@
       id,
 		});
 	}
-
-  function sendTime() {
-    dispatchUpdate('updateTimer', {
-      id,
-      time,
-    });
-  }
-  
-  function sendTimeAndAccumulated() {
-    dispatchUpdate('updateTimer', {
-      id,
-      accumulated,
-      time,
-    });
-  }
 
   const startButton = () => {
     if (!running) {
@@ -49,7 +34,6 @@
       } else {
         time += Date.now() - lastTime;
         paused = true;
-        sendTime();
       }
     }
   };
@@ -60,7 +44,6 @@
     }
     time += Date.now() - lastTime;
     lastTime = Date.now();
-    sendTime();
   };
 
   const accumulateButton = () => {
@@ -69,7 +52,6 @@
     time = 0;
     running = false;
     paused = true;
-    sendTimeAndAccumulated();
   };
 
   const changeTime = (operation: 'add' | 'substract') => {
