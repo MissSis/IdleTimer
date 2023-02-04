@@ -1,6 +1,7 @@
 <script lang="ts">
   import { extractTimeChange, millisToString, TimerInfo, type RemoveTimerEvent, type TimerUpdateEvent } from "./Timer";
   import { createEventDispatcher } from 'svelte';
+  import IconButton from "./buttons/IconButton.svelte";
 
 	const dispatch = createEventDispatcher<{removeTimer: RemoveTimerEvent}>();
   const dispatchUpdate = createEventDispatcher<{updateTimer: TimerUpdateEvent}>();
@@ -77,14 +78,14 @@
 </script>
 
 <div class="flex flex-col justify-center items-center gap-2 p-3 border rounded-lg relative" tabindex="-1" on:keyup={keyup}>
-  <button class="absolute top-2 right-2" on:click={removeTimer}>X</button>
+  <IconButton image='delete-2-svgrepo-com.svg' onClick={removeTimer} classes="absolute top-2 right-2" />
   <h1 class="text-5xl">{title}</h1>
   <div>Total: {millisToString(accumulated)}</div>
   <div class="text-4xl">{millisToString(time)}</div>
-  <div>
-    <button on:click={() => changeTime('add')}>+</button>
+  <div class="flex gap-1">
+    <IconButton image='plus-svgrepo-com.svg' onClick={() => changeTime('add')} />
     <input bind:value={timeChange} on:keyup={(e) => e.stopPropagation()} />
-    <button on:click={() => changeTime('substract')}>-</button>
+    <IconButton image='minus-svgrepo-com.svg' onClick={() => changeTime('substract')} />
   </div>
   <div>
     <button on:click={startButton} class={startButtonColor}>

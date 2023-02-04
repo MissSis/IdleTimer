@@ -6,6 +6,7 @@
   import Timer from "./Timer.svelte";
   import { focus } from "./utils/utils";
   import timerStore from './persistency/TimerStore';
+  import IconButton from "./buttons/IconButton.svelte";
 
   let newTimerTitle = '';
   let addDialogOpen = false;
@@ -48,7 +49,7 @@
   }
 </script>
 
-<button on:click={() => (addDialogOpen = true)} class="absolute left-1 top-1">+</button>
+<IconButton image='plus-svgrepo-com.svg' onClick={() => (addDialogOpen = true)} classes="absolute left-1 top-1 w-14 h-14" />
 <Dialog bind:open={addDialogOpen} title="Create new timer" close={closeDialog} submit={newTimerSubmitButton}>
   <input bind:value={newTimerTitle} bind:this={dialogInput} use:focus />
   <DialogButtons>
