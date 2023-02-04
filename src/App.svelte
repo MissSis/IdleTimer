@@ -12,7 +12,7 @@
   });
 </script>
 
-<main class="flex justify-center">
+<main class="flex justify-center bg-gray-800">
   <div class="m-10"></div>
   <TimerCollection />
 </main>

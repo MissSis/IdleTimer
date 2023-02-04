@@ -77,9 +77,16 @@
   $: startButtonColor = running ? (paused ? 'bg-yellow-600' : 'bg-green-700') : ''
 </script>
 
-<div class="flex flex-col justify-center items-center gap-2 p-3 border rounded-lg relative" tabindex="-1" on:keyup={keyup}>
-  <IconButton image='delete-2-svgrepo-com.svg' onClick={removeTimer} classes="absolute top-2 right-2" />
-  <h1 class="text-5xl">{title}</h1>
+<div
+  class="flex flex-col justify-center items-center gap-2 p-3 border border-gray-500 bg-gray-700 shadow-lg rounded-lg relative
+ focus-within:border-white focus-within::border-2 focus-within:bg-gray-600"
+  tabindex="-1" on:keyup={keyup}
+>
+  <div class="grid gap-3 w-full" style="grid-template-columns: 3rem auto 3rem;">
+    <div />
+    <h1 class="text-5xl">{title}</h1>
+    <IconButton image='delete-2-svgrepo-com.svg' onClick={removeTimer} />
+  </div>
   <div>Total: {millisToString(accumulated)}</div>
   <div class="text-4xl">{millisToString(time)}</div>
   <div class="flex gap-1">
