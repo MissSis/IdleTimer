@@ -49,7 +49,7 @@
   }
 </script>
 
-<IconButton image='plus-svgrepo-com.svg' onClick={() => (addDialogOpen = true)} classes="absolute left-1 top-1 w-14 h-14" />
+<IconButton image='plus-svgrepo-com.svg' onClick={() => (addDialogOpen = true)} classes="fixed left-3 top-5 w-14 h-14" />
 <Dialog bind:open={addDialogOpen} title="Create new timer" close={closeDialog} submit={newTimerSubmitButton}>
   <input bind:value={newTimerTitle} bind:this={dialogInput} use:focus />
   <DialogButtons>
