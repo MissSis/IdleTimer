@@ -15,7 +15,7 @@
   let running = false;
   let paused = true;
   let timeChange = '';
-  let tooltipOpen = false;
+  let inputShaking = false;
 
 	function removeTimer(): void {
 		dispatch('removeTimer', {
@@ -58,6 +58,7 @@
   const changeTime = (operation: 'add' | 'substract') => {
     const change = extractTimeChange(timeChange);
     if (!change) {
+      shakeInput();
     } else if (operation === 'add') {
       time += change;
     } else if (operation === 'substract') {
@@ -65,6 +66,13 @@
     }
     timeChange = '';
     updateButton();
+  }
+
+  function shakeInput() {
+    inputShaking = true;
+    setTimeout(() => {
+      inputShaking = false;
+    }, 600);
   }
 
   function keyup(e: KeyboardEvent) {
@@ -91,7 +99,7 @@
   <div class="text-4xl">{millisToString(time)}</div>
   <div class="flex gap-1">
     <IconButton image='plus-svgrepo-com.svg' onClick={() => changeTime('add')} />
-    <input bind:value={timeChange} on:keyup={(e) => e.stopPropagation()} />
+    <input bind:value={timeChange} on:keyup={(e) => e.stopPropagation()} class={inputShaking ? 'shake' : ''} />
     <IconButton image='minus-svgrepo-com.svg' onClick={() => changeTime('substract')} />
   </div>
   <div>
@@ -102,3 +110,23 @@
     <button on:click={accumulateButton}>Accumulate</button>
   </div>
 </div>
+
+<style>
+  .shake {
+    animation: shake-anim 0.20s 2 alternate linear;
+    border: 2px solid rgb(145, 0, 0);
+  }
+
+  @keyframes shake-anim {
+    0% {
+    }
+    33% {
+      transform: translateX(-10px);
+    }
+    66% {
+      transform: translateX(+10px);
+    }
+    100% {
+    }
+  }
+</style>
