@@ -7,12 +7,14 @@
   let initialized = false;
   persistenceManager.init().then(() => (initialized = true));
 
+  document.documentElement.classList.add('bg-gray-800');
+
   onDestroy(() => {
     persistenceManager.close();
   });
 </script>
 
-<main class="flex justify-center bg-gray-800">
+<main class="flex justify-center bg-gray-800 h-full">
   <TimerCollection />
 </main>
 
