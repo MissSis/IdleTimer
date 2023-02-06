@@ -13,6 +13,7 @@ const writeDelay = 1000;
 export default class PersistencyManager {
   unsubscribe: Unsubscriber;
   currentTimeout: NodeJS.Timeout | null = null;
+  successfulInitialized = false;
 
   async init(): Promise<void> {
     this.unsubscribe = timerStore.subscribe(timers => {
@@ -35,19 +36,23 @@ export default class PersistencyManager {
         throw new Error('Some ids in the file are not unique!');
       }
       timerStore.set(timers);
+      this.successfulInitialized = true;
 
     } catch (e) {
       if (typeof e !== 'string' || !e.includes('The system cannot find the file specified')) {
         throw e;
       }
+      this.successfulInitialized = true;
       this.write([]);
     }
   }
 
   private write(timers: TimerProps[]) {
-    writeTextFile(fileName, JSON.stringify(timers), {
-      dir: BaseDirectory.AppData,
-    });
+    if (this.successfulInitialized) {
+      writeTextFile(fileName, JSON.stringify(timers), {
+        dir: BaseDirectory.AppData,
+      });
+    }
   }
 
   close() {
