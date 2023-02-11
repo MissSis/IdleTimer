@@ -6,8 +6,6 @@
   export let color = '#fff';
 
   let filterString = hexToCssFilter(color);
-
-  const imagePath = '../../public/';
 </script>
 
-<img alt={alt} src={imagePath + image} class="w-full h-full" style={filterString} />
+<img alt={alt} src={image} class="w-full h-full" style={filterString} />
